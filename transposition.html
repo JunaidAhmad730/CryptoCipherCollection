@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transposition Cipher | Crypto App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #0f172a;
+            color: white;
+        }
+        .matrix-visualization {
+            display: grid;
+            gap: 0.25rem;
+            margin-top: 1rem;
+        }
+        .matrix-cell {
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.25rem;
+            background-color: #334155;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <button onclick="window.location.href='index.html'" class="flex items-center text-blue-500 hover:text-blue-400">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Ciphers
+            </button>
+        </div>
+
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-2">Transposition Cipher</h1>
+            <p class="text-lg opacity-80">Rearrange letters according to a system</p>
+        </header>
+
+        <div class="max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2" for="key">Key (Number of Columns)</label>
+                    <input type="number" id="key" min="2" max="10" value="3" class="w-full px-3 py-2 border rounded-lg bg-gray-700 border-gray-600">
+                    <div id="matrix-visualization" class="matrix-visualization"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2" for="text">Text</label>
+                    <input type="text" id="text" class="w-full px-3 py-2 border rounded-lg bg-gray-700 border-gray-600" placeholder="Enter text to process">
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 mb-6">
+                <button id="encrypt" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                    <i class="fas fa-lock mr-2"></i>Encrypt
+                </button>
+                <button id="decrypt" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                    <i class="fas fa-unlock mr-2"></i>Decrypt
+                </button>
+                <button id="clear" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
+                    <i class="fas fa-broom mr-2"></i>Clear
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-2">Result</label>
+                <div id="result" class="min-h-20 p-3 border rounded-lg bg-gray-700 border-gray-600 whitespace-pre-wrap"></div>
+            </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold mb-4">How the Transposition Cipher Works</h2>
+            <div class="text-gray-300">
+                <p>The Transposition cipher rearranges letters according to a system.</p>
+                <p class="font-semibold mt-4">Encryption Process:</p>
+                <ol class="list-decimal pl-5 space-y-2">
+                    <li>Write the message in rows of a fixed length (key)</li>
+                    <li>Read the ciphertext by reading the columns in order</li>
+                    <li>Decryption requires writing the ciphertext in columns and reading rows</li>
+                    <li>Padding may be needed to fill the last row</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Transposition Cipher Implementation
+        function transpositionEncrypt(text, cols) {
+            text = text.toUpperCase().replace(/\s+/g, '');
+            const rows = Math.ceil(text.length / cols);
+            let matrix = Array.from({length: rows}, () => []);
+            
+            // Fill matrix row-wise
+            for (let i = 0; i < text.length; i++) {
+                const row = Math.floor(i / cols);
+                const col = i % cols;
+                matrix[row][col] = text[i];
+            }
+            
+            // Read column-wise
+            let result = '';
+            for (let c = 0; c < cols; c++) {
+                for (let r = 0; r < rows; r++) {
+                    if (matrix[r][c]) {
+                        result += matrix[r][c];
+                    }
+                }
+            }
+            
+            updateMatrixVisualization(matrix);
+            return result.match(/.{1,4}/g)?.join(' ') || '';
+        }
+
+        function transpositionDecrypt(text, cols) {
+            text = text.toUpperCase().replace(/\s+/g, '');
+            const rows = Math.ceil(text.length / cols);
+            let matrix = Array.from({length: rows}, () => []);
+            
+            // Fill matrix column-wise
+            let index = 0;
+            for (let c = 0; c < cols; c++) {
+                for (let r = 0; r < rows; r++) {
+                    if (index < text.length) {
+                        matrix[r][c] = text[index++];
+                    }
+                }
+            }
+            
+            // Read row-wise
+            let result = '';
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (matrix[r][c]) {
+                        result += matrix[r][c];
+                    }
+                }
+            }
+            
+            return result;
+        }
+
+        function updateMatrixVisualization(matrix) {
+            const container = document.getElementById('matrix-visualization');
+            container.innerHTML = '';
+            
+            const cols = matrix[0]?.length || 0;
+            container.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+            
+            for (let r = 0; r < matrix.length; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'matrix-cell';
+                    cell.textContent = matrix[r][c] || '';
+                    container.appendChild(cell);
+                }
+            }
+        }
+
+        // UI Event Handlers
+        document.getElementById('key').addEventListener('input', (e) => {
+            const cols = parseInt(e.target.value);
+            const text = document.getElementById('text').value;
+            
+            if (text && cols >= 2 && cols <= 10) {
+                transpositionEncrypt(text, cols);
+            }
+        });
+
+        document.getElementById('encrypt').addEventListener('click', () => {
+            const key = parseInt(document.getElementById('key').value);
+            const text = document.getElementById('text').value;
+            
+            if (!text) {
+                alert('Please enter text to encrypt');
+                return;
+            }
+
+            document.getElementById('result').textContent = transpositionEncrypt(text, key);
+        });
+
+        document.getElementById('decrypt').addEventListener('click', () => {
+            const key = parseInt(document.getElementById('key').value);
+            const text = document.getElementById('text').value;
+            
+            if (!text) {
+                alert('Please enter text to decrypt');
+                return;
+            }
+
+            document.getElementById('result').textContent = transpositionDecrypt(text, key);
+        });
+
+        document.getElementById('clear').addEventListener('click', () => {
+            document.getElementById('text').value = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('matrix-visualization').innerHTML = '';
+        });
+    </script>
+</body>
+</html>
