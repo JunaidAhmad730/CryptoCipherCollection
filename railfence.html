@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rail Fence Cipher | Crypto App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #0f172a;
+            color: white;
+        }
+        .rail-visualization {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .rail {
+            display: flex;
+            gap: 0.25rem;
+        }
+        .rail-char {
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.25rem;
+            background-color: #334155;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <button onclick="window.location.href='index.html'" class="flex items-center text-blue-500 hover:text-blue-400">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Ciphers
+            </button>
+        </div>
+
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-2">Rail Fence Cipher</h1>
+            <p class="text-lg opacity-80">Transposition cipher writing in zigzag pattern</p>
+        </header>
+
+        <div class="max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2" for="rails">Number of Rails (2-10)</label>
+                    <input type="number" id="rails" min="2" max="10" value="3" class="w-full px-3 py-2 border rounded-lg bg-gray-700 border-gray-600">
+                    <div id="rail-visualization" class="rail-visualization"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2" for="text">Text</label>
+                    <input type="text" id="text" class="w-full px-3 py-2 border rounded-lg bg-gray-7 00 border-gray-600" placeholder="Enter text to process">
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 mb-6">
+                <button id="encrypt" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                    <i class="fas fa-lock mr-2"></i>Encrypt
+                </button>
+                <button id="decrypt" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                    <i class="fas fa-unlock mr-2"></i>Decrypt
+                </button>
+                <button id="clear" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
+                    <i class="fas fa-broom mr-2"></i>Clear
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-2">Result</label>
+                <div id="result" class="min-h-20 p-3 border rounded-lg bg-gray-700 border-gray-600 whitespace-pre-wrap"></div>
+            </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold mb-4">How the Rail Fence Cipher Works</h2>
+            <div class="text-gray-300">
+                <p>The Rail Fence cipher is a form of transposition cipher that works by writing the plaintext in a zigzag pattern along multiple "rails".</p>
+                <p class="font-semibold mt-4">Encryption Process:</p>
+                <ol class="list-decimal pl-5 space-y-2">
+                    <li>Write the message in a zigzag pattern along the specified number of rails</li>
+                    <li>Read the ciphertext by reading each rail sequentially</li>
+                    <li>Decryption requires reconstructing the original zigzag pattern</li>
+                    <li>The security increases with more rails, but becomes more complex</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Rail Fence Cipher Implementation
+        function railFenceEncrypt(text, rails) {
+            const pattern = Array.from({length: rails}, () => []);
+            let rail = 0;
+            let down = true;
+            
+            for (const char of text) {
+                pattern[rail].push(char);
+                if (rail === 0) down = true;
+                if (rail === rails - 1) down = false;
+                rail += down ? 1 : -1;
+            }
+            
+            updateRailVisualization(pattern);
+            return pattern.flat().join('');
+        }
+
+        function railFenceDecrypt(text, rails) {
+            const pattern = Array.from({length: rails}, () => []);
+            let rail = 0;
+            let down = true;
+            const positions = [];
+            
+            // Determine rail positions
+            for (let i = 0; i < text.length; i++) {
+                positions.push(rail);
+                if (rail === 0) down = true;
+                if (rail === rails - 1) down = false;
+                rail += down ? 1 : -1;
+            }
+            
+            // Fill pattern with characters
+            let index = 0;
+            for (let r = 0; r < rails; r++) {
+                for (let i = 0; i < positions.length; i++) {
+                    if (positions[i] === r) {
+                        pattern[r][i] = text[index++];
+                    }
+                }
+            }
+            
+            // Read decrypted text
+            let result = '';
+            rail = 0;
+            down = true;
+            
+            for (let i = 0; i < text.length; i++) {
+                result += pattern[rail].shift();
+                if (rail === 0) down = true;
+                if (rail === rails - 1) down = false;
+                rail += down ? 1 : -1;
+            }
+            
+            return result;
+        }
+
+        function updateRailVisualization(pattern) {
+            const container = document.getElementById('rail-visualization');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < pattern.length; i++) {
+                const railDiv = document.createElement('div');
+                railDiv.className = 'rail';
+                
+                for (const char of pattern[i]) {
+                    const charDiv = document.createElement('div');
+                    charDiv.className = 'rail-char';
+                    charDiv.textContent = char;
+                    railDiv.appendChild(charDiv);
+                }
+                
+                container.appendChild(railDiv);
+            }
+        }
+
+        // UI Event Handlers
+        document.getElementById('rails').addEventListener('input', (e) => {
+            const rails = parseInt(e.target.value);
+            const text = document.getElementById('text').value;
+            
+            if (text && rails >= 2 && rails <= 10) {
+                railFenceEncrypt(text, rails);
+            }
+        });
+
+        document.getElementById('encrypt').addEventListener('click', () => {
+            const rails = parseInt(document.getElementById('rails').value);
+            const text = document.getElementById('text').value;
+            
+            if (!text) {
+                alert('Please enter text to encrypt');
+                return;
+            }
+
+            document.getElementById('result').textContent = railFenceEncrypt(text, rails);
+        });
+
+        document.getElementById('decrypt').addEventListener('click', () => {
+            const rails = parseInt(document.getElementById('rails').value);
+            const text = document.getElementById('text').value;
+            
+            if (!text) {
+                alert('Please enter text to decrypt');
+                return;
+            }
+
+            document.getElementById('result').textContent = railFenceDecrypt(text, rails);
+        });
+
+        document.getElementById('clear').addEventListener('click', () => {
+            document.getElementById('text').value = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('rail-visualization').innerHTML = '';
+        });
+    </script>
+</body>
+</html>
