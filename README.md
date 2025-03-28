@@ -1,7 +1,7 @@
 # Crypto Cipher Collection
 An interactive suite of classic cryptographic ciphers, showcasing various encryption techniques used throughout history. This collection includes both substitution and transposition methods, offering hands-on implementations for better understanding.
 
-Substitution Ciphers
+Substitution Ciphers /n
 Caesar Cipher – A simple substitution cipher that shifts letters in the alphabet by a fixed number of positions.
 
 Vigenère Cipher – A polyalphabetic substitution cipher that uses a repeating keyword to shift letters dynamically.
