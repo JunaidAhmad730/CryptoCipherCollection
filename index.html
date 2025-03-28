@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Cipher Collection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #0f172a;
+            color: white;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 20%);
+        }
+        .cipher-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .cipher-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        .cipher-icon {
+            transition: all 0.3s ease;
+            font-size: 2rem;
+            text-shadow: 0 0 10px currentColor;
+        }
+        .cipher-card:hover .cipher-icon {
+            transform: scale(1.1) rotate(5deg);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        .title-text {
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient 8s ease infinite;
+            background-size: 200% 200%;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <header class="text-center mb-16">
+            <h1 class="text-5xl font-bold mb-4 title-text">Crypto Cipher Collection</h1>
+            <p class="text-xl opacity-80">Interactive implementations of classic cryptographic ciphers</p>
+            <div class="mt-6 flex justify-center space-x-4">
+                <span class="px-3 py-1 bg-blue-900/30 text-blue-400 rounded-full text-sm">Substitution</span>
+                <span class="px-3 py-1 bg-green-900/30 text-green-400 rounded-full text-sm">Transposition</span>
+                <span class="px-3 py-1 bg-purple-900/30 text-purple-400 rounded-full text-sm">Polyalphabetic</span>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Caesar Cipher -->
+            <a href="caesar.html" class="cipher-card bg-gray-800/50 rounded-xl shadow-lg p-6 backdrop-blur-sm">
+                <div class="text-center">
+                    <i class="cipher-icon fas fa-exchange-alt text-blue-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-3">Caesar Cipher</h2>
+                    <p class="text-gray-300">Simple substitution cipher with letter shifting</p>
+                </div>
+            </a>
+
+            <!-- Vigenère Cipher -->
+            <a href="vigenere.html" class="cipher-card bg-gray-800/50 rounded-xl shadow-lg p-6 backdrop-blur-sm">
+                <div class="text-center">
+                    <i class="cipher-icon fas fa-key text-green-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-3">Vigenère Cipher</h2>
+                    <p class="text-gray-300">Polyalphabetic substitution using a keyword</p>
+                </div>
+            </a>
+
+            <!-- Playfair Cipher -->
+            <a href="playfair.html" class="cipher-card bg-gray-800/50 rounded-xl shadow-lg p-6 backdrop-blur-sm">
+                <div class="text-center">
+                    <i class="cipher-icon fas fa-th text-purple-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-3">Playfair Cipher</h2>
+                    <p class="text-gray-300">Digraphic substitution cipher using a 5x5 matrix</p>
+                </div>
+            </a>
+
+            <!-- Rail Fence Cipher -->
+            <a href="railfence.html" class="cipher-card bg-gray-800/50 rounded-xl shadow-lg p-6 backdrop-blur-sm">
+                <div class="text-center">
+                    <i class="cipher-icon fas fa-wave-square text-yellow-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-3">Rail Fence Cipher</h2>
+                    <p class="text-gray-300">Transposition cipher writing in zigzag pattern</p>
+                </div>
+            </a>
+
+            <!-- Transposition Cipher -->
+            <a href="transposition.html" class="cipher-card bg-gray-800/50 rounded-xl shadow-lg p-6 backdrop-blur-sm">
+                <div class="text-center">
+                    <i class="cipher-icon fas fa-columns text-red-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-3">Transposition Cipher</h2>
+                    <p class="text-gray-300">Rearrange letters according to a system</p>
+                </div>
+            </a>
+
+            <!-- Atbash Cipher -->
+            <a href="atbash.html" class="cipher-card bg-gray-800/50 rounded-xl shadow-lg p-6 backdrop-blur-sm">
+                <div class="text-center">
+                    <i class="cipher-icon fas fa-retweet text-pink-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-3">Atbash Cipher</h2>
+                    <p class="text-gray-300">Simple substitution cipher reversing the alphabet</p>
+                </div>
+            </a>
+
+            <!-- Monoalphabetic Cipher -->
+            <a href="monoalphabetic.html" class="cipher-card bg-gray-800/50 rounded-xl shadow-lg p-6 backdrop-blur-sm">
+                <div class="text-center">
+                    <i class="cipher-icon fas fa-random text-indigo-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-3">Monoalphabetic Cipher</h2>
+                    <p class="text-gray-300">Custom substitution cipher with alphabet mapping</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
